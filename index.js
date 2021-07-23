@@ -1,8 +1,10 @@
-canCon=document.getElementsByTagName("canvas")[0]; //背景
-canText=document.getElementsByTagName("canvas")[1]; //文字
-img=document.getElementsByTagName("img")[0];
-inText=document.getElementsByTagName("input")[0]; //文字入力
-inUpdate=document.getElementsByTagName("input")[1]; //再描画ボタン
+canCon=document.getElementById("canCon"); //背景
+canText=document.getElementById("canText"); //文字
+img=document.getElementById("displayImg");
+inText=document.getElementById("inputDisplayText"); //文字入力
+inUpdate=document.getElementById("inputUpdateButton"); //再描画ボタン
+fukidashiPosOption=document.getElementById("fukidashiPosOption");
+fukidashiSharpness=document.getElementById("fukidashiSharpness");
 
 //clear canvas
 function ClearCan(can){
@@ -31,27 +33,66 @@ function drawConcentratedLine(can){
 function drawTextArea(can){
     ctx=can.getContext("2d");
     let l=can.width/3;
-
+    
     let a=0;
     let preA=0;
     ctx.lineWidth=4;
     ctx.fillStyle="white";
     ctx.beginPath();
     ctx.moveTo(can.width/2+l, can.height/2)
+
+    let isFukidashi=true;
+    let fukidashiAngles=[0,0,0];
+    if(fukidashiPosOption.value=="0") isFukidashi=false;
+    switch(fukidashiPosOption.value){ //吹き出しの位置 
+        case "1": //left-up
+        fukidashiAngles=[210*2*Math.PI/360,225*2*Math.PI/360,240*2*Math.PI/360]; break;
+        case "2": //left-down
+            fukidashiAngles=[130*2*Math.PI/360,135*2*Math.PI/360,150*2*Math.PI/360]; break;         
+        case "3": //right-up
+            fukidashiAngles=[300*2*Math.PI/360,315*2*Math.PI/360,330*2*Math.PI/360]; break;
+        case "4": //right-down
+            fukidashiAngles=[30*2*Math.PI/360,45*2*Math.PI/360,60*2*Math.PI/360]; break;
+    }
+
+    let cr1=fukidashiSharpness.value;
+    if(cr1<0.5){
+        cr1=0.5;
+        fukidashiSharpness.value=0.5;
+    }
+    else if(cr1>1.2){
+        cr1=1.2;
+        fukidashiSharpness.value=1.2;
+    }
     while(true){
         preA=a;
         a+=(20+Math.random()*20)*2*Math.PI/360;
 
+        if(isFukidashi==true){
+            if(Math.abs(fukidashiAngles[1]-a)<=40*Math.PI/360){
+                a=fukidashiAngles[0]+(Math.random()*10-5)*2*Math.PI/360;
+                ctx.quadraticCurveTo(can.width/2+cr1*l*(Math.cos(a)+Math.cos(preA)), can.height/2+0.8*l*(Math.sin(a)+Math.sin(preA))/2, can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2); //吹き出し第1頂点まで
+                a=fukidashiAngles[1];
+                ctx.lineTo(can.width/2 + 2*l*Math.cos(a), can.height/2+2*l*Math.sin(a)/2); //吹き出し第2頂点(大外)まで
+                a=fukidashiAngles[2]+(Math.random()*10-5)*2*Math.PI/360;
+                ctx.lineTo(can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2); //吹き出し第3頂点まで
+                preA=a;
+                a+=(20+Math.random()*20)*2*Math.PI/360; 
+                isFukidashi=false;    
+            }
+        }
+
         if(a>=2*Math.PI){
             a=2*Math.PI;
-            ctx.quadraticCurveTo(can.width/2+0.8*l*(Math.cos(a)+Math.cos(preA)), can.height/2+0.8*l*(Math.sin(a)+Math.sin(preA))/2, can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2);
+            ctx.quadraticCurveTo(can.width/2+cr1*l*(Math.cos(a)+Math.cos(preA)), can.height/2+0.8*l*(Math.sin(a)+Math.sin(preA))/2, can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2);
             break;
         }         
-        ctx.quadraticCurveTo(can.width/2+0.8*l*(Math.cos(a)+Math.cos(preA)), can.height/2+0.8*l*(Math.sin(a)+Math.sin(preA))/2, can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2);
+        ctx.quadraticCurveTo(can.width/2+cr1*l*(Math.cos(a)+Math.cos(preA)), can.height/2+0.8*l*(Math.sin(a)+Math.sin(preA))/2, can.width/2 + l*Math.cos(a), can.height/2+l*Math.sin(a)/2);
     }
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+
 }
 
 function copyCanContext(can1,can2){

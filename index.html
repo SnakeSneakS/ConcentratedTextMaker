@@ -9,12 +9,53 @@
     <link rel="stylesheet"  type="text/css" href="index.css">
 </head>
 <body>
-    <canvas width="800px" height="400px"></canvas>
-    <canvas width="800px" height="400px"></canvas>
-    <img width="800px" height="400px">
+    <canvas id="canCon" width="800px" height="400px"></canvas>
+    <canvas id="canText" width="800px" height="400px"></canvas>
+    <img id="displayImg" width="800px" height="400px">
 
-    <input type="text">
-    <input type="button" value="Update BG">
+    <div>
+        <input id="inputDisplayText" class="l-size" type="text">
+        <input id="inputUpdateButton" class="l-size" type="button" value="Update BG">
+    </div>
+    
+    <div>
+        <span>Options</span>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>設定項目</th>
+                    <th>値</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        吹き出しの位置 
+                    </td>
+                    <td>
+                        <select id="fukidashiPosOption" class="option-input" >
+                            <option value="0">なし</option>
+                            <option value="1">左上</option>
+                            <option value="2">左下</option>
+                            <option value="3">右上</option>
+                            <option value="4">右下</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        吹き出しの鋭さ(0.5~1.2)
+                    </td>
+                    <td>
+                        <input id="fukidashiSharpness" class="option-input" type="number" min="0.5", max="1.2", step="0.05", value="0.7">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+       
+    </div>
+    
+    
 </body>
 </html>
 

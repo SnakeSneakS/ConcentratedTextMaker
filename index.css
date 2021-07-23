@@ -1,4 +1,12 @@
+body{
+    font-family: "sans-serif"
+}
+
 canvas{
-    width:800;
-    height: 600;
+    display: none;
+}
+
+input{
+    height: 32px;
+    font-size: 18px;
 }
